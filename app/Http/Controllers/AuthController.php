@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -45,6 +46,28 @@ class AuthController extends Controller
             'token' => $token,
             'token_type' => 'Bearer'
         ], 200);
+
+    }
+
+    public function login(Request $request){
+        if(!Auth::attempt($request->only('name', 'password'))){
+            return response()->json([
+                'status' => 401,
+                'message' => 'Unauthorized',
+                'token' => 'null',
+                'token_type' => 'null'
+            ], 401);
+        }else {
+            $user = User::where('name', $request['email'])->firstOrFail();
+            $token = $user->createToken('auth_token')->plainTextToken;
+    
+            return response()->json([
+                'status' => 200,
+                'message' => $user->name . 'berhasil login',
+                'token' => $token,
+                'token_type' => 'Bearer'
+            ]);
+        }
 
     }
 
