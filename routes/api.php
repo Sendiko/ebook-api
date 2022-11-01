@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthorController;
@@ -16,23 +17,24 @@ use App\Http\Controllers\BookController;
 |
 */
 
-//! option 1
-// ? Route::get('me', [AuthController::class, 'me']);
-// ? Route::get('book', [BookController::class, 'index']);
-// ? Route::get('book/{id}', [BookController::class, 'show']);
-// ? Route::post('book', [BookController::class, 'store']);
-// ? Route::put('book/{id}', [BookController::class, 'update']);
-// ? Route::delete('book/{id}', [BookController::class, 'destroy']);
-
-Route::resource('books', BookController::class)->except(
-    ['create', 'edit']
-);
+// ? Public routes
 
 Route::get('authors', [AuthorController::class, 'index']);
 Route::get('authors/{id}', [AuthorController::class, 'show']);
-Route::post('authors', [AuthorController::class, 'store']);
-Route::put('authors/{id}', [AuthorController::class, 'update']);
-Route::delete('authors/{id}', [AuthorController::class, 'destroy']);
+Route::get('books', [BookController::class, 'index']);
+Route::get('books/{id}', [BookController::class, 'show']);
+Route::post('register', [AuthController::class, 'register']);
+
+// ? protected routes
+
+Route::middleware('auth:sanctum')->group(function(){
+    Route::resource('books', BookController::class)->except(
+        ['create', 'edit', 'index', 'show']
+    );
+    Route::post('authors', [AuthorController::class, 'store']);
+    Route::put('authors/{id}', [AuthorController::class, 'update']);
+    Route::delete('authors/{id}', [AuthorController::class, 'destroy']);
+});
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
