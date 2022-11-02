@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -22,20 +23,16 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validator = $request->validate([ 
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8'
         ]);
 
-        if($validator -> fails()){
-            return response()->json([$validator->errors()]);
-        }
-
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'name' => $validator['name'],
+            'email' => $validator['email'],
+            'password' => Hash::make($validator['password'])
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -46,6 +43,43 @@ class AuthController extends Controller
             'token_type' => 'Bearer'
         ], 200);
 
+    }
+
+    public function login(Request $request){
+        $validator = $request->validate([
+            'email' => 'required|string',
+            'password' => 'required|string'
+        ]);
+
+        $user = User::where('email', $validator['email'])->firstOrFail();
+        if(!$user || !Hash::check($validator['password'], $user->password)){
+            return response()->json([
+                'status' => 401,
+                'message' => $user->name . ' gagal login, mohon cek kembali data',
+                'token' => 'null',
+                'token_type' => 'null'
+            ], 401);
+        } else {
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return response()->json([
+                'status' => 200,
+                'message' => $user->name . ' berhasil register',
+                'token' => $token,
+                'token_type' => 'Bearer'
+            ], 200);
+        }
+
+    }
+
+    public function logout()
+    {
+        auth('sanctum')->user()->tokens()->delete();
+        return response()->json([
+            'status' => 200,
+            'message' => 'berhasil logout',
+            'token' => 'null',
+            'token_type' => 'null'
+        ], 200);
     }
 
 }
