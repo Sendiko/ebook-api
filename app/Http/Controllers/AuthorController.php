@@ -63,7 +63,7 @@ class AuthorController extends Controller
         } else {
             return response()->json([
                 'status' => 404,
-                'message' => `that $id is not found` 
+                'message' => `$id not found` 
             ], 404);
         };
     }
@@ -118,7 +118,7 @@ class AuthorController extends Controller
         }else {
             return response()->json([
                 'status' => 404,
-                'message' => 'data not found'
+                'message' => `$id not found`
             ], 404);
         }
     }

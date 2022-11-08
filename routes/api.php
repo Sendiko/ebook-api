@@ -17,7 +17,7 @@ use App\Http\Controllers\BookController;
 |
 */
 
-// ? Public routes
+// ? public routes
 
 Route::get('authors', [AuthorController::class, 'index']);
 Route::get('authors/{id}', [AuthorController::class, 'show']);
