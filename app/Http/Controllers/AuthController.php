@@ -38,7 +38,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             'status' => 200,
-            'message' => $user->name . ' berhasil register',
+            'message' => `$user->name  berhasil register`,
             'token' => $token,
             'token_type' => 'Bearer'
         ], 200);
@@ -55,7 +55,7 @@ class AuthController extends Controller
         if(!$user || !Hash::check($validator['password'], $user->password)){
             return response()->json([
                 'status' => 401,
-                'message' => $user->name . ' gagal login, mohon cek kembali data',
+                'message' => `$user->name gagal login, mohon cek kembali data`,
                 'token' => 'null',
                 'token_type' => 'null'
             ], 401);
@@ -63,7 +63,7 @@ class AuthController extends Controller
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json([
                 'status' => 200,
-                'message' => $user->name . ' berhasil register',
+                'message' => `$user->name berhasil register`,
                 'token' => $token,
                 'token_type' => 'Bearer'
             ], 200);

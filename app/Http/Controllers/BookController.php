@@ -68,7 +68,7 @@ class BookController extends Controller
         } else {
             return response()->json([
                 'status' => 404,
-                'message' => 'that $id is not found' 
+                'message' => `$id not found` 
             ], 404);
         };
     }
@@ -110,7 +110,7 @@ class BookController extends Controller
             return response()->json([
                 'status' => 404,
                 'data' => $book,
-                'message' =>'$id not found'
+                'message' =>`$id not found`
             ], 404);
         }
     }
@@ -128,12 +128,12 @@ class BookController extends Controller
             $book->delete();
             return response()->json([
                 'status' => 200,
-                'message' => 'data successfully deleted'
+                'message' => `$id successfully deleted`
             ], 200);
         }else {
             return response()->json([
                 'status' => 404,
-                'message' => 'data not found'
+                'message' => `$id not found`
             ], 404);
         }
     }
